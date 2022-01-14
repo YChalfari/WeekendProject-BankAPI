@@ -1,4 +1,1 @@
-[
-  { "name": "yitz", "id": 1234, "cash": -100, "credit": "100" },
-  { "name": "yitz", "id": 12345, "cash": 400, "credit": 0 }
-]
+[{"id":12345,"name":"yitzi","cash":500,"credit":200},{"id":1234,"name":"yitz","cash":-100,"credit":200}]

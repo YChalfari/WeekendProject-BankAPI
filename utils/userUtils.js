@@ -95,19 +95,19 @@ const withdrawFunds = (id, amount) => {
   return stringToJson("client", user);
 };
 //Transfer
+
 const transferFunds = (id, recipientID, amount) => {
-  const recipient = JSON.parse(getUser(recipientID)).client;
-  console.log(recipient, id);
-  const { users, user } = limitReached(id, amount);
-  const parsedAmount = parseInt(amount);
+  const recipient = getUser(recipientID);
+  const user = JSON.parse(withdrawFunds(id, amount)).client;
+  const rec = JSON.parse(depositToUser(recipientID, amount)).client;
+  const users = loadUsers();
+  console.log(user, rec, users);
   const filteredUsers = users.filter(
     (user) => user.id != recipientID && user.id != id
   );
-  user.cash -= parsedAmount;
-  recipient.cash += parsedAmount;
-  filteredUsers.push(user, recipient);
+  filteredUsers.push(user, rec);
   saveUsers(filteredUsers);
-  return stringToJson("client", user, "recipient", recipient);
+  return stringToJson("client", user, "recipient", rec);
 };
 //Check if provided cash/credit else provide default value of 0
 const setDefaultAssets = (newUser) => {
@@ -130,3 +130,18 @@ module.exports = {
   withdrawFunds,
   transferFunds,
 };
+
+// const transferFunds = (id, recipientID, amount) => {
+//   const recipient = JSON.parse(getUser(recipientID)).client;
+//   console.log(recipient, id);
+//   const { users, user } = limitReached(id, amount);
+//   const parsedAmount = parseInt(amount);
+//   const filteredUsers = users.filter(
+//     (user) => user.id != recipientID && user.id != id
+//   );
+//   user.cash -= parsedAmount;
+//   recipient.cash += parsedAmount;
+//   filteredUsers.push(user, recipient);
+//   saveUsers(filteredUsers);
+//   return stringToJson("client", user, "recipient", recipient);
+// };
