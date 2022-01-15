@@ -5,6 +5,7 @@ const loadUsers = () => {
   try {
     const dataBuffer = fs.readFileSync("./db/users.json");
     const dataJSON = dataBuffer.toString();
+
     return JSON.parse(dataJSON);
   } catch (e) {
     return [];
@@ -27,9 +28,8 @@ const saveUsers = (users) => {
 const getUser = (id) => {
   const users = loadUsers();
   const user = users.find((user) => user.id === parseInt(id));
-  if (!user) {
-    throw new Error("User not found");
-  }
+  if (!user) throw new Error("User not found");
+  if (!user.isActive) throw new Error("User is not active");
   return stringToJson("client", user);
 };
 //Add a new user
@@ -118,9 +118,44 @@ const setDefaultAssets = (newUser) => {
   if (!updatedUser.credit) {
     updatedUser.credit = 0;
   }
+  if (!updatedUser.isActive) {
+    updatedUser.isActive = true;
+  }
   return updatedUser;
 };
-
+const filterUsers = (query, users) => {
+  if (Object.keys(query).length === 0) {
+    console.log(query);
+    return users;
+  }
+  let filteredUsers = [...users];
+  Object.entries(query).forEach(([key, value]) => {
+    filteredUsers.forEach((user) => {
+      if (user[key] === "undefined") {
+        console.log(user, key);
+        throw new Error("Invalid query");
+      }
+    });
+  });
+  Object.entries(query).forEach(([key, value]) => {
+    if (key !== "cash" && key !== "isActive" && key !== "credit") {
+      filteredUsers = filteredUsers.filter((user) => user[key] === value);
+      console.log("no cash no active", filteredUsers, key);
+    } else if (key === "cash" || key === "credit") {
+      console.log(filteredUsers);
+      filteredUsers = filteredUsers.filter((user) => user[key] >= value);
+    } else {
+      console.log("isActive");
+      filteredUsers = filteredUsers.filter(
+        (user) => user[key] == JSON.parse(value)
+      );
+    }
+  });
+  if (filteredUsers.length < 1) {
+    return { results: "No users matched" };
+  }
+  return { results: filteredUsers };
+};
 module.exports = {
   loadUsers,
   addUser,
@@ -129,6 +164,7 @@ module.exports = {
   updateCredit,
   withdrawFunds,
   transferFunds,
+  filterUsers,
 };
 
 // const transferFunds = (id, recipientID, amount) => {

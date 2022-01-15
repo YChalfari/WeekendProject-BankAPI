@@ -1,1 +1,1 @@
-[{"id":12345,"name":"yitzi","cash":500,"credit":200},{"id":1234,"name":"yitz","cash":-100,"credit":200}]
+[{"id":12345,"name":"yitzi","cash":500,"credit":200,"isActive":false},{"id":1234,"name":"yitz","cash":-100,"credit":200,"isActive":true},{"name":"y","id":666,"cash":0,"credit":0,"isActive":true}]

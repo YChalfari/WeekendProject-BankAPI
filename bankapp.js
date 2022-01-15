@@ -7,6 +7,7 @@ const {
   updateCredit,
   withdrawFunds,
   transferFunds,
+  filterUsers,
 } = require("./utils/userUtils");
 
 const app = express();
@@ -16,11 +17,18 @@ app.use(express.json());
 //Get list of users
 app.get("/users", (req, res) => {
   try {
-    res.status(200).send(loadUsers());
+    res.status(200).send(filterUsers(req.query, loadUsers()));
   } catch (e) {
     res.status(400).send({ error: e.message });
   }
 });
+// app.get("/users", (req, res) => {
+//   try {
+//     res.status(200).send(loadUsers());
+//   } catch (e) {
+//     res.status(400).send({ error: e.message });
+//   }
+// });
 //Get specific user
 app.get("/users/:id", (req, res) => {
   try {
@@ -72,5 +80,8 @@ app.put("/transfer/:id", (req, res) => {
   }
 });
 //WILDCARD
+app.all("*", (req, res) => {
+  res.send({ error: "No Path Found" });
+});
 const PORT = 3000;
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
